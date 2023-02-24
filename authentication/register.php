@@ -1,14 +1,27 @@
 <?php
 require_once('functions.php');
+$siteKey = '6Le4ya4kAAAAAKVxK5D8W3l104TmeV6SFHspvOGI'; 
+$secret = '6Le4ya4kAAAAAOoOjy-eee_V-GXYBkjmYmW5V2Kl'; 
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['recaptcha_response'])) {
 
-if (isset($_POST['username']) && isset($_POST['email']) && isset($_POST['password'])) {
-    $result = saveUser(htmlentities($_POST['username']), htmlentities($_POST['email']), htmlentities($_POST['password']));
-    if($result === true) {
-        header('Location: index.php');
-    } else {
-        echo "Une erreur est survenue " . $result;
+    $recaptcha_url = 'https://www.google.com/recaptcha/api/siteverify';
+    $recaptcha_secret = $secret;
+    $recaptcha_response = $_POST['recaptcha_response'];
+    
+    $recaptcha = file_get_contents($recaptcha_url . '?secret=' . $recaptcha_secret . '&response=' . $recaptcha_response);
+    $recaptcha = json_decode($recaptcha);
+
+    if ($recaptcha->score >= 0.5) {
+        if (isset($_POST['username']) && isset($_POST['email']) && isset($_POST['password'])) {
+            $result = saveUser(htmlentities($_POST['username']), htmlentities($_POST['email']), htmlentities($_POST['password']));
+            if($result === true) {
+                header('Location: index.php');
+            } else {
+                echo "Une erreur est survenue " . $result;
+            }
+        }    
     }
-}
+} 
 ?>
 
 <html>
@@ -19,6 +32,17 @@ if (isset($_POST['username']) && isset($_POST['email']) && isset($_POST['passwor
     <title>Ma super app sécurisée - Inscription</title>
     <!-- Bootstrap -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+
+    <script src="https://www.google.com/recaptcha/api.js?render=6Le4ya4kAAAAAKVxK5D8W3l104TmeV6SFHspvOGI">
+    </script>
+    <script>
+    grecaptcha.ready(function () {
+    grecaptcha.execute('6Le4ya4kAAAAAKVxK5D8W3l104TmeV6SFHspvOGI', { action: 'label' }).then(function (token) {
+    var recaptchaResponse = document.getElementById('recaptchaResponse');
+    recaptchaResponse.value = token;
+                });
+            });
+    </script>
 </head>
 <body>
 <div class="container">
@@ -53,6 +77,7 @@ if (isset($_POST['username']) && isset($_POST['email']) && isset($_POST['passwor
             </div>
         </div>
         <button type="submit" class="btn btn-primary">S'inscrire</button>
+        <input type="hidden" name="recaptcha_response" id="recaptchaResponse">
     </form>
     <script>
         var password = document.getElementById("password");
