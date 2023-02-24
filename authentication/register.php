@@ -2,7 +2,8 @@
 require_once('functions.php');
 
 if (isset($_POST['username']) && isset($_POST['email']) && isset($_POST['password'])) {
-    $result = saveUser($_POST['username'], $_POST['email'], $_POST['password']);
+    $username = htmlentities($_POST['username']);
+    $result = saveUser(username, $_POST['email'], $_POST['password']);
     if($result === true) {
         header('Location: index.php');
     } else {
