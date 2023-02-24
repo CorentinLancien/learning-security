@@ -3,9 +3,8 @@ require_once('functions.php');
 session_start();
 $user = isset($_SESSION['user']) ? $_SESSION['user'] : null;
 if (isset($_GET['email']) && isset($_GET['password'])) {
-    $users = logUser($_GET['email'], $_GET['password']);
-    if(!empty($users)) {
-        $user = $users[0];
+    $user = logUser($_GET['email'], $_GET['password']);
+    if(isset($user)) {
         $_SESSION['user'] = $user;
     }
 }
@@ -46,8 +45,8 @@ if (isset($_GET['email']) && isset($_GET['password'])) {
     </form>
     <a href="register.php">Je m'inscrit</a>
     <?php else: ?>
-        <h1>Bienvenue <?= $user->email ?></h1>
-    <a href="informations.php?id=<?= $user->id ?>">Mes informations</a><br/>
+        <h1>Bienvenue <?= $user['email'] ?></h1>
+    <a href="informations.php?id=<?= $user['id']?>">Mes informations</a><br/>
     <a href="logout.php">Logout</a>
     <?php endif ?>
 </div>
