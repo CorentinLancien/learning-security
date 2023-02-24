@@ -1,11 +1,13 @@
 <?php
 require_once('functions.php');
-$user = isset($_SESSION['user']) ? $_SESSION['user'] : null;
-if(isset($_GET['id'])) {
+session_start();
+if(isset($_SESSION['user']) && isset($_GET['id'])) {
     $users = getUser($_GET['id']);
     if(!empty($users)) {
         $user = $users[0];
     }
+}else{
+    header('Location: index.php');
 }
 ?>
 
