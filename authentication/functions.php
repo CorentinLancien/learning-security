@@ -16,26 +16,29 @@ function connectDb()
 function logUser($email, $password)
 {
     $connexion = connectDb();
-    $sql = 'SELECT * FROM users WHERE email = "' . $email . '" AND password = "' .$password . '"';
-    $stmt = $connexion->prepare($sql);
-    $stmt->execute();
+    $sql = $connexion->prepare('SELECT * FROM users WHERE email = ? AND password = ?');
+    $sql->bindParam(1, $email);
+    $sql->bindParam(2, $password);
+    $sql->execute();
 
-    return $stmt->fetchAll(PDO::FETCH_OBJ);
+    return $sql->fetchAll(PDO::FETCH_OBJ);
 }
 
 function getUser($id) {
     $connexion = connectDb();
-    $sql = 'SELECT * FROM users WHERE id = ' . $id;
-    $stmt = $connexion->prepare($sql);
-    $stmt->execute();
+    $sql = $connexion->prepare('SELECT * FROM users WHERE id = ?');
+    $sql->bindParam(1,$id);
+    $sql->execute();
 
-    return $stmt->fetchAll(PDO::FETCH_OBJ);
+    return $sql->fetchAll(PDO::FETCH_OBJ);
 }
 
 function saveUser($email, $username, $password) {
     $connexion = connectDb();
-    $sql = 'INSERT INTO users(username,email,password) VALUES("'.$email.'","'.$username.'","'.$password.'")';
-    $stmt = $connexion->prepare($sql);
+    $sql = $connexion->prepare('INSERT INTO users(username,email,password) VALUES(?,?,?)');
+    $sql->bindParam(1, $email);
+    $sql->bindParam(2, $username);
+    $sql->bindParam(3, $password);
 
-    return $stmt->execute();
+    return $sql->execute();
 }
