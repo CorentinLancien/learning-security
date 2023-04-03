@@ -1,5 +1,6 @@
 <?php
 require_once('functions.php');
+require_once('config.php');
 session_start();
 $user = isset($_SESSION['user']) ? $_SESSION['user'] : null;
 if (isset($_GET['email']) && isset($_GET['password'])) {
@@ -43,7 +44,11 @@ if (isset($_GET['email']) && isset($_GET['password'])) {
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
+    <?php if(isset($_GET['error']) && htmlspecialchars($_GET['error']) === "error_login"): ?>
+        <div>Il n'y a aucun compte créer avec cette email</div>
+    <?php endif ?>
     <a href="register.php">Je m'inscrit</a>
+    <a href="https://accounts.google.com/o/oauth2/v2/auth?scope=email&access_type=online&response_type=code&redirect_uri=<?= urlencode('http://localhost/connect.php')?>&client_id=<?= GOOGLE_ID?>">Je me connecte avec google</a>
     <?php else: ?>
         <h1>Bienvenue <?= $user['email'] ?></h1>
     <a href="informations.php?id=<?= $user['id']?>">Mes informations</a><br/>

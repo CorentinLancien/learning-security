@@ -27,6 +27,18 @@ function logUser($email, $password)
     return $result;
 }
 
+function logUserFromGoogle($email)
+{
+    $connexion = connectDb();
+    $sql = $connexion->prepare('SELECT * FROM users WHERE email = ?');
+
+    $sql->bindParam(1, $email);
+    $sql->execute();
+    $result = $sql->fetch(PDO::FETCH_ASSOC);
+    
+    return $result;
+}
+
 function getUser($id) {
     $connexion = connectDb();
     $sql = $connexion->prepare('SELECT * FROM users WHERE id = ?');
